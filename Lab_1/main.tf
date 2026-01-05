@@ -1,3 +1,9 @@
+locals {
+  team = "api_mgmt_dev"
+  application = "corp_api"
+  server_name = "ec2-${var.environment}-api-${var.variables_sub_az}"
+}
+
 #Retrieve the list of AZs in the current AWS region
 data "aws_availability_zones" "available" {}
 data "aws_region" "current" {}
@@ -91,17 +97,19 @@ resource "aws_internet_gateway" "internet_gateway" {
   }
 }
 
-# resource "aws_instance" "web" {
-#   ami           = "ami-099400d52583dd8c4"
-#   instance_type = "t3.micro"
+resource "aws_instance" "web_server" {
+  ami           = "ami-099400d52583dd8c4"
+  instance_type = "t3.micro"
 
-#   subnet_id              = "subnet-07f08773a36d7f02d"
-#   vpc_security_group_ids = ["sg-0d88b1563446f3cec"]
+  subnet_id              = "subnet-031c42e06f1dbf21e"
+  vpc_security_group_ids = ["sg-0e5573e8b3447f755"]
 
-#   tags = {
-#     "Terraform" = "true"
-#   }
-# }
+  tags = {
+    Name = local.server_name
+    Owner = local.team
+    Application = local.application
+  }
+}
 
 resource "aws_subnet" "terraform-subnet" {
   vpc_id                  = aws_vpc.vpc.id
