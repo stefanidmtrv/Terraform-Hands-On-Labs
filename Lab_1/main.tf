@@ -91,14 +91,26 @@ resource "aws_internet_gateway" "internet_gateway" {
   }
 }
 
-resource "aws_instance" "web" {
-  ami           = "ami-099400d52583dd8c4"
-  instance_type = "t3.micro"
+# resource "aws_instance" "web" {
+#   ami           = "ami-099400d52583dd8c4"
+#   instance_type = "t3.micro"
 
-  subnet_id              = "subnet-07f08773a36d7f02d"
-  vpc_security_group_ids = ["sg-0d88b1563446f3cec"]
+#   subnet_id              = "subnet-07f08773a36d7f02d"
+#   vpc_security_group_ids = ["sg-0d88b1563446f3cec"]
+
+#   tags = {
+#     "Terraform" = "true"
+#   }
+# }
+
+resource "aws_subnet" "terraform-subnet" {
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = var.variables_sub_cidr
+  availability_zone       = var.variables_sub_az
+  map_public_ip_on_launch = var.variables_sub_auto_ip
 
   tags = {
-    "Terraform" = "true"
+    Name      = "sub-variables-${var.variables_sub_az}"
+    Terraform = "true"
   }
 }
